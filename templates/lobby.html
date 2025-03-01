@@ -1,0 +1,217 @@
+{% extends "base.html" %}
+
+{% block title %}Lobby - Smash&Clash{% endblock %}
+
+{% block head %}
+{{ super() }}
+<meta name="username" content="{{ username }}">
+{% endblock %}
+
+{% block content %}
+<!-- Animated background -->
+<div class="animated-background">
+    <div class="particles-container" id="particles-container"></div>
+</div>
+
+<!-- User Greeting Section -->
+<div class="greeting-container">
+    <div class="greeting-content">
+        <h1 id="userGreeting">Welcome back!</h1>
+        <div class="quote-container">
+            <p id="randomQuote">Loading an inspiring quote...</p>
+            <p class="quote-author" id="quoteAuthor"></p>
+        </div>
+    </div>
+</div>
+
+<div class="lobby-container">
+    <div class="game-modes">
+        <h2>Choose Your Battle</h2>
+        <div class="mode-cards">
+            <div class="mode-card" id="vs-computer">
+                <div class="mode-icon">🤖</div>
+                <h3>Practice Mode</h3>
+                <p>Challenge our AI in a strategic battle! Perfect for learning the game mechanics.</p>
+                <button class="btn btn-primary" onclick="window.lobbyClient.startComputerGame()">
+                    <span>Play vs AI</span>
+                    <span class="icon">→</span>
+                </button>
+            </div>
+            <div class="mode-card" id="vs-player">
+                <div class="mode-icon">👥</div>
+                <h3>Ranked Match</h3>
+                <p>Battle against other players and climb the ranks!</p>
+                <button class="btn btn-primary" id="findMatchBtn">
+                    <span>Find Match</span>
+                    <span class="icon">→</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <div class="stats-panel">
+            <h3>Your Stats</h3>
+            <div class="stat-grid">
+                <div class="stat-item">
+                    <div class="stat-label">Rating</div>
+                    <div class="stat-value">{{ current_user.rating }}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Games Won</div>
+                    <div class="stat-value">{{ current_user.games_won }}</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-label">Win Rate</div>
+                    <div class="stat-value">
+                        {% if current_user.games_played > 0 %}
+                            {{ (current_user.games_won / current_user.games_played * 100) | round(1) }}%
+                        {% else %}
+                            0%
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Daily Quests Section -->
+        <div class="quests-panel">
+            <div class="panel-header">
+                <h3>Daily Quests</h3>
+                <div class="refresh-quests" id="refreshQuests" title="Refresh Quests">
+                    <span class="refresh-icon">🔄</span>
+                </div>
+            </div>
+            <div class="quests-list" id="questsList">
+                <!-- Quest items will be loaded dynamically -->
+                <div class="loading-spinner"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Match finding modal -->
+<div id="matchModal" class="modal">
+    <div class="modal-content">
+        <h3>Finding Match</h3>
+        <div class="spinner"></div>
+        <p id="matchStatus">Searching for opponents...</p>
+        <button class="btn btn-secondary" id="cancelMatchBtn">Cancel</button>
+    </div>
+</div>
+
+<!-- Player Profile Modal -->
+<div id="profileModal" class="modal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="player-profile-name"></h3>
+            <button class="modal-close">&times;</button>
+        </div>
+        <div class="player-stats">
+            <div class="stat">
+                <span class="stat-label">Rating</span>
+                <span class="stat-value rating"></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Games Won</span>
+                <span class="stat-value games-won"></span>
+            </div>
+            <div class="stat">
+                <span class="stat-label">Win Rate</span>
+                <span class="stat-value win-rate"></span>
+            </div>
+        </div>
+        <div class="player-actions">
+            <button class="btn btn-primary challenge-btn">Challenge to a Game</button>
+            <button class="btn btn-secondary add-friend-btn">Add Friend</button>
+        </div>
+        <div class="match-history">
+            <h4>Recent Matches</h4>
+            <div class="match-history-list"></div>
+        </div>
+    </div>
+</div>
+
+<!-- Quest Completion Modal -->
+<div id="questCompletedModal" class="modal">
+    <div class="modal-content quest-completion">
+        <div class="quest-completion-header">
+            <h3>Quest Completed!</h3>
+            <div class="coin-reward">
+                <span class="coin-icon">🪙</span>
+                <span class="reward-amount">+<span id="completedQuestReward">100</span></span>
+            </div>
+        </div>
+        <div class="quest-completion-details">
+            <p class="quest-title" id="completedQuestTitle">Win 3 matches in a row</p>
+        </div>
+        <button class="btn btn-primary" id="claimRewardBtn">
+            <span>Claim Reward</span>
+        </button>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="{{ url_for('static', filename='js/lobby.js') }}"></script>
+<script>
+// Create particles for the animated background
+document.addEventListener('DOMContentLoaded', function() {
+    const particlesContainer = document.getElementById('particles-container');
+    
+    // Create 20 particles with random properties
+    for (let i = 0; i < 20; i++) {
+        createParticle(particlesContainer);
+    }
+    
+    // Add new particles periodically
+    setInterval(() => {
+        if (document.querySelectorAll('.particle').length < 20) {
+            createParticle(particlesContainer);
+        }
+    }, 3000);
+});
+
+function createParticle(container) {
+    const particle = document.createElement('div');
+    particle.classList.add('particle');
+    
+    // Random size between 10px and 50px
+    const size = Math.random() * 40 + 10;
+    particle.style.width = `${size}px`;
+    particle.style.height = `${size}px`;
+    
+    // Random position
+    const posX = Math.random() * 100;
+    const posY = Math.random() * 100;
+    particle.style.left = `${posX}%`;
+    particle.style.bottom = `${-10}%`;
+    
+    // Random opacity
+    particle.style.opacity = (Math.random() * 0.5 + 0.1).toString();
+    
+    // Random animation duration
+    const duration = Math.random() * 10 + 10;
+    particle.style.animation = `float ${duration}s infinite`;
+    
+    // Random delay
+    const delay = Math.random() * 5;
+    particle.style.animationDelay = `${delay}s`;
+    
+    // Random horizontal movement
+    const translateX = Math.random() * 200 - 100;
+    particle.style.transform = `translateX(${translateX}px)`;
+    
+    container.appendChild(particle);
+    
+    // Remove particle after animation completes
+    setTimeout(() => {
+        if (particle.parentNode === container) {
+            container.removeChild(particle);
+        }
+    }, (duration + delay) * 1000);
+}
+</script>
+{% endblock %}

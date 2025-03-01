@@ -1,0 +1,2919 @@
+:root {
+    --card-width: 100px;
+    --card-height: 140px;
+    --primary-color: #635BFF;
+    --secondary-color: #4A4458;
+    --light-color: #F7F6F9;
+    --accent-color: #8D7EFF;
+    --success-color: #36B37E;
+    --warning-color: #FFAB00;
+    --error-color: #FF5630;
+    --info-color: #00B8D9;
+    --text-primary: #2E2C34;
+    --text-secondary: #6B6F76;
+    --purple-light: #F4F2FF;
+    --purple-hover: #ECE9FF;
+    --box-shadow: 0 1px 3px rgba(99, 91, 255, 0.1);
+    --card-hover-shadow: 0 4px 12px rgba(99, 91, 255, 0.15);
+}
+
+/* Reset and Base Styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background-color: var(--light-color);
+    min-height: 100vh;
+    color: var(--text-primary);
+    line-height: 1.5;
+}
+
+/* Navigation */
+.main-nav {
+    background: white;
+    padding: 1rem;
+    box-shadow: var(--box-shadow);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.nav-content {
+    max-width: 1280px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 2rem;
+}
+
+.logo {
+    color: var(--primary-color);
+    font-size: 1.5rem;
+    text-decoration: none;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.nav-links {
+    display: flex;
+    gap: 2rem;
+    align-items: center;
+}
+
+.nav-link {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+}
+
+.nav-link:hover {
+    color: var(--primary-color);
+    background: var(--purple-light);
+}
+
+.nav-link.active {
+    color: var(--primary-color);
+    background: var(--purple-light);
+}
+
+/* Coin Display in Navigation */
+.coin-display {
+    display: flex;
+    align-items: center;
+    background: linear-gradient(135deg, #FFD700, #FFA500);
+    border-radius: 20px;
+    padding: 5px 12px;
+    margin-right: 15px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+    color: #000;
+    font-weight: bold;
+}
+
+.coin-display:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.coin-icon {
+    margin-right: 6px;
+    font-size: 1.1rem;
+}
+
+.coin-value {
+    font-size: 1rem;
+}
+
+/* Animation for when coins change */
+@keyframes coinUpdate {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.coin-display.updated {
+    animation: coinUpdate 0.5s ease;
+}
+
+/* Main Content */
+.main-content {
+    max-width: 1280px;
+    margin: 2rem auto;
+    padding: 0 2rem;
+}
+
+/* Alert Messages */
+.alert {
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 8px;
+    animation: slideIn 0.3s ease-out;
+    font-weight: 500;
+}
+
+.alert-success { background-color: var(--success-color); color: white; }
+.alert-error { background-color: var(--error-color); color: white; }
+.alert-warning { background-color: var(--warning-color); color: var(--primary-color); }
+.alert-info { background-color: var(--info-color); color: white; }
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+/* Auth Forms */
+.auth-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: calc(100vh - 200px);
+    padding: 2rem;
+}
+
+.auth-box {
+    background: white;
+    padding: 2.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    width: 100%;
+    max-width: 420px;
+}
+
+.auth-box h2 {
+    color: var(--text-primary);
+    margin-bottom: 2rem;
+    font-weight: 700;
+    text-align: center;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.75rem 1rem;
+    border: 2px solid var(--purple-light);
+    border-radius: 8px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+}
+
+.form-control:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 3px var(--purple-light);
+}
+
+.error {
+    color: var(--error-color);
+    font-size: 0.875rem;
+    margin-top: 0.5rem;
+}
+
+.auth-links {
+    margin-top: 1.5rem;
+    text-align: center;
+    color: var(--text-secondary);
+}
+
+.auth-links a {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-links a:hover {
+    text-decoration: underline;
+}
+
+/* Lobby Styles */
+.lobby-container {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 2rem;
+    padding: 2rem;
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+.game-modes {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+}
+
+.game-modes h2 {
+    color: var(--text-primary);
+    margin-bottom: 1.5rem;
+    font-weight: 700;
+}
+
+.mode-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.mode-card {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 2rem;
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.mode-card:hover {
+    transform: translateY(-2px);
+    background: rgba(255, 255, 255, 0.5);
+    border-color: var(--primary-color);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.mode-card h3 {
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+.mode-card p {
+    color: var(--text-secondary);
+    margin-bottom: 1.5rem;
+}
+
+/* Game Mode Cards Enhancement */
+.mode-icon {
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+    background: var(--purple-light);
+    width: 60px;
+    height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    transition: transform 0.3s ease;
+}
+
+.mode-card:hover .mode-icon {
+    transform: scale(1.1);
+}
+
+/* Stats Panel */
+.sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.stats-panel {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    transition: all 0.3s ease;
+}
+
+.stats-panel:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.stat-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.stat-item {
+    background: var(--purple-light);
+    padding: 1rem;
+    border-radius: 8px;
+    text-align: center;
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    color: var(--primary-color);
+    font-size: 1.25rem;
+    font-weight: 700;
+}
+
+/* Game Board Layout */
+#game-container {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    padding: 2rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+}
+
+#game-board {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transition: transform 0.3s ease;
+}
+
+#game-board.flipped {
+    transform: rotate(180deg);
+}
+
+.player-area {
+    display: grid;
+    grid-template-columns: 150px 1fr 150px;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--purple-light);
+    border-radius: 12px;
+    min-height: calc(var(--card-height) + 2rem);
+}
+
+.hand {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: center;
+    align-items: center;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 8px;
+    min-height: var(--card-height);
+    overflow-x: auto;
+}
+
+.effect-slot, .discard-pile {
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 8px;
+    min-height: var(--card-height);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#arena {
+    padding: 2rem;
+    background: var(--purple-hover);
+    border-radius: 12px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+.cell {
+    background: rgba(255, 255, 255, 0.7);
+    border-radius: 8px;
+    aspect-ratio: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    position: relative;
+}
+
+.cell:hover {
+    background: white;
+    transform: translateY(-2px);
+}
+
+.cell.empty {
+    border: 2px dashed var(--primary-color);
+    opacity: 0.5;
+}
+
+.cell::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: 8px;
+    border: 2px dashed transparent;
+    transition: all 0.2s ease;
+}
+
+.cell:not(.occupied):hover::after {
+    border-color: var(--primary-color);
+    background: rgba(99, 91, 255, 0.1);
+}
+
+/* Card Styles */
+.card {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.3s ease-in-out;
+    width: 100%;
+    height: 100%;
+    position: relative;
+    box-sizing: border-box;
+}
+
+.card.playable {
+    cursor: grab;
+    animation: pulse 2s infinite;
+}
+
+.card.playable:hover {
+    transform: translateY(-8px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+.card.selected {
+    transform: translateY(-10px);
+}
+
+.card-content {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.card.capturing {
+    animation: capture 0.5s ease-in-out;
+}
+
+.card.captured {
+    opacity: 0.7;
+    border-color: var(--warning-color);
+}
+
+@keyframes capture {
+    0% {
+        transform: rotateY(0);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+/* Remove the captured label */
+.grid .card.captured::after {
+    content: none;
+}
+
+/* Remove captured state styles */
+.card.captured {
+    /* No special styling - just use owner styles */
+    transform: rotateY(180deg);
+}
+
+/* Player's cards */
+.card.owner-self {
+    border-color: var(--success-color);
+    background: linear-gradient(135deg, #f6f7f8 0%, #e0e4e8 100%);
+}
+
+/* Opponent's cards */
+.card.owner-opponent {
+    border-color: var(--error-color);
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+}
+
+.card-back {
+    background: linear-gradient(45deg, #2c3e50 25%, #34495e 25%, #34495e 50%, #2c3e50 50%, #2c3e50 75%, #34495e 75%);
+    background-size: 20px 20px;
+    border: 2px solid #333;
+    border-radius: 8px;
+    width: 100%;
+    height: 100%;
+}
+
+.card-back-design {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.card-back-design::after {
+    content: "S&C";
+    color: #FFD700;  /* Using hex code for gold */
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.card-name {
+    font-size: 0.875rem;
+    font-weight: 600;
+    text-align: center;
+    color: var(--text-primary);
+}
+
+.card-faction {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    text-align: center;
+}
+
+.card-type {
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    text-align: center;
+    font-weight: 500;
+}
+
+.elements {
+    margin-top: auto;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.25rem;
+    padding: 0.25rem;
+}
+
+.element {
+    font-size: 0.75rem;
+    padding: 0.25rem;
+    border-radius: 4px;
+    text-align: center;
+    background: var(--purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+}
+
+.element.fire { color: #ff4d4d; background-color: #ffcdd2; }
+.element.water { color: #00b8d9; background-color: #bbdefb; }
+.element.air { color: #8d7eff; background-color: #f5f5f5; }
+.element.earth { color: #36b37e; background-color: #c8e6c9; }
+
+.element.fire::before { content: '🔥'; }
+.element.water::before { content: '💧'; }
+.element.air::before { content: '💨'; }
+.element.earth::before { content: '🌍'; }
+
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-back {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: default;
+}
+
+.card-back-design {
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+.card-back-design::before {
+    content: '★';
+}
+
+.cell .card {
+    width: 100%;
+    height: 100%;
+}
+
+/* Game Controls */
+#game-controls {
+    display: flex;
+    justify-content: space-between;
+    padding: 1rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+    transform-origin: center center;
+}
+
+#game-board.flipped #game-controls {
+    transform: rotate(180deg);
+}
+
+/* Game Header */
+#header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+}
+
+#game-status {
+    display: flex;
+    gap: 2rem;
+}
+
+.player {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.player .name {
+    font-weight: 600;
+}
+
+.deck-count {
+    font-size: 0.875rem;
+    color: var (--text-secondary);
+}
+
+/* Turn Indicator */
+#turn-indicator {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    background: white;
+}
+
+.turn-status {
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+}
+
+.turn-status.my-turn {
+    background: var(--success-color);
+    color: white;
+}
+
+/* Game Board Styles */
+#game-container {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-top: 2rem;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, var(--card-width));
+    grid-template-rows: repeat(3, var(--card-height));
+    gap: 10px;
+    padding: 20px;
+    background: var(--purple-light);
+    border-radius: 12px;
+}
+
+.card {
+    width: var(--card-width);
+    height: var(--card-height);
+    background: white;
+    border-radius: 8px;
+    border: 2px solid var(--primary-color);
+    cursor: pointer;
+    transition: transform 0.2s;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 5px;
+    box-shadow: var(--box-shadow);
+}
+
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-hover-shadow);
+}
+
+/* Card Animations */
+.card {
+    transition: transform 0.3s ease-in-out;
+    transform-style: preserve-3d;
+}
+
+.card.capturing {
+    animation: capture 0.5s ease-in-out;
+}
+
+.card.captured {
+    transform: rotateY(180deg);
+}
+
+@keyframes capture {
+    0% {
+        transform: rotateY(0);
+    }
+    100% {
+        transform: rotateY(180deg);
+    }
+}
+
+/* Show captured card indicator */
+.grid .card.captured::after {
+    content: none;
+}
+
+/* Enhance card styles for better visibility */
+.grid .card {
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px;
+    transition: all 0.3s ease;
+    font-size: 90%;
+    height: 100%;
+    width: 100%;
+    position: relative;
+}
+
+.grid .card.character-card.light {
+    background: linear-gradient(135deg, #f6f7f8 0%, #e0e4e8 100%);
+    border: 2px solid gold;
+}
+
+.grid .card.character-card.dark {
+    background: linear-gradient(135deg, #2c3e50 0%, #1a2530 100%);
+    border: 2px solid purple;
+    color: white;
+}
+
+.card-header {
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    padding-bottom: 5px;
+    margin-bottom: 5px;
+    font-weight: bold;
+    text-align: center;
+    font-size: 12px;
+}
+
+.card-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.card-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    font-size: 10px;
+}
+
+.card-stat {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.card-stat-name {
+    font-weight: bold;
+}
+
+.card-footer {
+    font-size: 10px;
+    text-align: center;
+    margin-top: 5px;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding-top: 5px;
+}
+
+/* Distinguish cards by player */
+.card[data-owner="player1"] {
+    border-color: #4caf50;
+}
+
+.card[data-owner="player2"] {
+    border-color: #f44336;
+}
+
+/* Element Animations */
+@keyframes burning {
+    0% { box-shadow: 0 0 4px #ff4d4d; }
+    50% { box-shadow: 0 0 12px #ff4d4d; }
+    100% { box-shadow: 0 0 4px #ff4d4d; }
+}
+
+@keyframes ripple {
+    0% { transform: scale(1); opacity: 1; }
+    100% { transform: scale(2); opacity: 0; }
+}
+
+@keyframes wind {
+    0% { transform: rotate(0deg) scale(1); }
+    50% { transform: rotate(5deg) scale(1.1); }
+    100% { transform: rotate(0deg) scale(1); }
+}
+
+@keyframes rumble {
+    0%, 100% { transform: translateX(0); }
+    25% { transform: translateX(-2px); }
+    75% { transform: translateX(2px); }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .lobby-container {
+        grid-template-columns: 1fr;
+        padding: 1rem;
+    }
+
+    .nav-content {
+        padding: 0 1rem;
+    }
+
+    .main-content {
+        padding: 0 1rem;
+    }
+
+    .mode-cards {
+        grid-template-columns: 1fr;
+    }
+
+    :root {
+        --card-width: 80px;
+        --card-height: 112px;
+    }
+
+    .card.selected {
+        transform: translateY(-15px);
+        box-shadow: 0 8px 16px rgba(99, 91, 255, 0.3);
+        border: 2px solid var(--primary-color);
+    }
+
+    .cell.valid-target {
+        background: var(--purple-hover);
+        border: 3px dashed var(--primary-color);
+    }
+
+    .card {
+        touch-action: none; /* Prevents default touch behaviors */
+    }
+
+    .grid {
+        gap: 8px; /* Smaller gap for mobile */
+        padding: 10px;
+    }
+
+    .hand {
+        overflow-x: scroll;
+        -webkit-overflow-scrolling: touch;
+        padding: 10px;
+        gap: 8px;
+    }
+
+    /* Prevent text selection during touch interactions */
+    .card, .cell {
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    /* Larger touch targets */
+    .cell {
+        min-height: 80px;
+    }
+
+    /* Visual feedback for touch */
+    .card:active {
+        transform: scale(0.95);
+        transition: transform 0.1s;
+    }
+}
+
+.card.being-dragged {
+    opacity: 0.8;
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(99, 91, 255, 0.3);
+    pointer-events: none;
+}
+
+.cell.valid-target {
+    background: var(--purple-hover);
+    border: 3px dashed var(--primary-color);
+    animation: targetPulse 1s infinite;
+}
+
+@keyframes targetPulse {
+    0% { border-color: var(--primary-color); }
+    50% { border-color: var(--accent-color); }
+    100% { border-color: var(--primary-color); }
+}
+
+/* Mobile-specific styles */
+@media (max-width: 768px) {
+    .card {
+        touch-action: none;
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        user-select: none;
+    }
+
+    .card.selected {
+        transform: translateY(-10px);
+        box-shadow: 0 8px 16px rgba(99, 91, 255, 0.3);
+        border: 2px solid var(--primary-color);
+    }
+
+    .hand {
+        padding: 15px;
+        gap: 10px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+    }
+
+    .cell {
+        min-height: 100px;
+        min-width: 100px;
+    }
+    
+    #turn-indicator {
+        padding: 12px;
+        font-size: 1.2rem;
+    }
+}
+
+/* Button Styles */
+.btn {
+    padding: 0.75rem 1.5rem;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 1rem;
+    font-weight: 600;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-primary {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: var(--accent-color);
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(99, 91, 255, 0.25);
+}
+
+.btn-danger {
+    background-color: var(--error-color);
+    color: white;
+}
+
+.btn-danger:hover {
+    background-color: #c0392b;
+}
+
+.btn-secondary {
+    background-color: var(--purple-light);
+    color: var(--primary-color);
+}
+
+.btn-secondary:hover {
+    background-color: var(--purple-hover);
+}
+
+/* Button Icon */
+.btn .icon {
+    transition: transform 0.2s ease;
+}
+
+.btn:hover .icon {
+    transform: translateX(4px);
+}
+
+/* Game Status */
+#turn-indicator {
+    font-size: 1.5rem;
+    color: var(--primary-color);
+    margin: 1rem 0;
+    text-align: center;
+    font-weight: bold;
+}
+
+/* Modal */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(46, 44, 52, 0.7);
+    justify-content: center;
+    align-items: center;
+    backdrop-filter: blur(4px);
+}
+
+.modal.active {
+    display: flex;
+}
+
+.modal-content {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+    max-width: 480px;
+    width: 90%;
+}
+
+/* Online Players and Active Matches */
+.online-players, .active-matches {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1.5rem;
+}
+
+.players-list, .matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.player-item, .match-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+    transition: background-color 0.2s;
+}
+
+.player-item:hover, .match-item:hover {
+    background: var(--purple-hover);
+}
+
+/* Chat System */
+.chat-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    display: flex;
+    flex-direction: column;
+    height: 400px;
+}
+
+.chat-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--purple-light);
+}
+
+.chat-select {
+    width: 100%;
+    margin-top: 0.5rem;
+    padding: 0.5rem;
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+}
+
+.chat-messages {
+    flex: 1;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.chat-message {
+    max-width: 80%;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.chat-message.sent {
+    align-self: flex-end;
+    background: var(--primary-color);
+    color: white;
+}
+
+.chat-message.received {
+    align-self: flex-start;
+    background: var(--purple-light);
+}
+
+.chat-input {
+    padding: 1rem;
+    border-top: 1px solid var(--purple-light);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+}
+
+/* Status Indicators */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-dot.online {
+    background-color: var(--success-color);
+}
+
+.status-dot.away {
+    background-color: var(--warning-color);
+}
+
+.status-dot.offline {
+    background-color: var(--error-color);
+}
+
+/* Player Profile Modal */
+.player-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+}
+
+.stat {
+    text-align: center;
+    padding: 1rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+}
+
+.stat-label {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+.stat-value {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+}
+
+.match-history {
+    margin-top: 1.5rem;
+}
+
+.match-history-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.match-history-item.won {
+    border-left: 4px solid var(--success-color);
+}
+
+.match-history-item.lost {
+    border-left: 4px solid var(--error-color);
+}
+
+/* Loading States */
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var (--purple-light);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Loading Spinner */
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--purple-light);
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto;
+}
+
+/* Loading States */
+.loading-spinner {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var (--purple-light);
+    border-top: 2px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin: 1rem auto;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Status Indicators */
+.status-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    display: inline-block;
+    margin-right: 8px;
+}
+
+.status-dot.online {
+    background-color: var(--success-color);
+}
+
+.status-dot.away {
+    background-color: var(--warning-color);
+}
+
+.status-dot.offline {
+    background-color: var(--error-color);
+}
+
+/* Game Chat */
+#game-chat {
+    position: fixed;
+    bottom: 0;
+    right: 20px;
+    width: 300px;
+    background: white;
+    border-radius: 12px 12px 0 0;
+    box-shadow: var(--box-shadow);
+    z-index: 1000;
+    transition: transform 0.3s ease;
+}
+
+#game-chat.minimized {
+    transform: translateY(calc(100% - 40px));
+}
+
+.chat-header {
+    padding: 0.75rem;
+    background: var(--primary-color);
+    color: white;
+    border-radius: 12px 12px 0 0;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+.toggle-chat {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1.2rem;
+    padding: 0 0.5rem;
+}
+
+.chat-messages {
+    height: 300px;
+    overflow-y: auto;
+    padding: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* Card Back Design */
+.card-back {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    position: relative;
+    overflow: hidden;
+}
+
+.card-back::before {
+    content: '★';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: 2rem;
+    color: rgba(255, 255, 255, 0.2);
+}
+
+/* Friends List Panel */
+.friends-panel {
+    position: fixed;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    width: 280px;
+    background: white;
+    box-shadow: var(--box-shadow);
+    z-index: 900;
+    display: flex;
+    flex-direction: column;
+}
+
+.friends-header {
+    padding: 1rem;
+    background: var(--purple-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.friends-search {
+    padding: 1rem;
+    border-bottom: 1px solid var(--purple-light);
+}
+
+.friends-search input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+}
+
+.friends-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.friend-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.friend-item:hover {
+    background: var(--purple-light);
+}
+
+.friend-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+.friend-info {
+    flex: 1;
+}
+
+.friend-name {
+    font-weight: 600;
+}
+
+.friend-status {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Friend Request Badge */
+.friend-requests-badge {
+    background: var(--error-color);
+    color: white;
+    border-radius: 12px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    margin-left: 0.5rem;
+}
+
+/* Private Chat Window */
+.private-chat {
+    position: fixed;
+    bottom: 0;
+    right: 340px;
+    width: 300px;
+    background: white;
+    border-radius: 12px 12px 0 0;
+    box-shadow: var(--box-shadow);
+    z-index: 1000;
+}
+
+.private-chat.minimized {
+    transform: translateY(calc(100% - 40px));
+}
+
+/* Card Elements Enhancement */
+.element {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.element::before {
+    font-size: 1rem;
+}
+
+.element.fire::before { content: '🔥'; }
+.element.water::before { content: '💧'; }
+.element.air::before { content: '💨'; }
+.element.earth::before { content: '🌍'; }
+
+/* Card Hover Effects */
+.card:hover:not(.flipped):not(.card-back) {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+    z-index: 100;
+}
+
+/* Drag and Drop Styles */
+.card[draggable="true"] {
+    cursor: grab;
+}
+
+.card[draggable="true"]:active {
+    cursor: grabbing;
+}
+
+.card.dragging {
+    opacity: 0.5;
+    transform: scale(1.05) rotate(5deg);
+}
+
+.cell.valid-target {
+    background: var(--purple-hover);
+    border: 2px dashed var(--primary-color);
+    animation: pulse 1s infinite;
+}
+
+.card.placed {
+    animation: placeCard 0.5s ease-out;
+}
+
+@keyframes placeCard {
+    0% {
+        transform: translateY(-20px) scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Turn Announcement Animation */
+.turn-announcement {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: rgba(0, 0, 0, 0.8);
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    padding: 20px 40px;
+    border-radius: 8px;
+    z-index: 1000;
+    text-align: center;
+    animation: fadeIn 0.5s;
+}
+
+.turn-announcement.fade-out {
+    animation: fadeOut 1s;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeOut {
+    from {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+}
+
+/* Improve turn indicator */
+#turn-indicator .turn-status {
+    padding: 10px 15px;
+    border-radius: 5px;
+    text-align: center;
+    margin: 10px 0;
+    font-weight: bold;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+#turn-indicator .turn-status.my-turn {
+    background-color: #4caf50;
+    color: white;
+    animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+    0% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7);
+    }
+    70% {
+        box-shadow: 0 0 0 10px rgba(76, 175, 80, 0);
+    }
+    100% {
+        box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+    }
+}
+
+/* Ensure the grid cells are properly styled */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+.cell {
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 2px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    position: relative;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.cell:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+.cell.empty:hover {
+    border-color: #4caf50;
+}
+
+/* Highlight cards to show they're playable */
+.card.playable {
+    box-shadow: 0 0 10px rgba(76, 175, 80, 0.7);
+    cursor: pointer;
+}
+
+.card.selected {
+    transform: translateY(-10px);
+}
+
+/* Ensure cards on the grid are visible */
+.grid .card {
+    width: 90%;
+    height: 90%;
+    position: absolute;
+}
+
+/* Card back design */
+.card-back {
+    background-color: #2c3e50;
+    position: relative;
+}
+
+.card-back-design {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 80%;
+    height: 80%;
+    border-radius: 5px;
+    background: repeating-linear-gradient(
+        45deg,
+        #34495e,
+        #34495e 10px,
+        #2c3e50 10px,
+        #2c3e50 20px
+    );
+}
+
+/* Improved card element layout */
+.card-elements {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 10;
+}
+
+.card-element {
+    position: absolute;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.1rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    pointer-events: auto;
+    transition: all 0.3s ease;
+    z-index: 10;
+}
+
+/* Better positioning for elements */
+.card-element.fire {
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid #ff4d4d;
+    color: #ff4d4d;
+}
+
+.card-element.water {
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 2px solid #00b8d9;
+    color: #00b8d9;
+}
+
+.card-element.air {
+    top: 50%;
+    right: 5px;
+    transform: translateY(-50%);
+    border: 2px solid #8d7eff;
+    color: #8d7eff;
+}
+
+.card-element.earth {
+    top: 50%;
+    left: 5px;
+    transform: translateY(-50%);
+    border: 2px solid #36b37e;
+    color: #36b37e;
+}
+
+/* Flipped card elements positioning - when opponent owns the card */
+.card.flipped .card-element.fire {
+    top: unset;
+    bottom: 5px;
+    left: 50%;
+    transform: translateX(-50%) rotateY(180deg);
+}
+
+.card.flipped .card-element.water {
+    bottom: unset;
+    top: 5px;
+    left: 50%;
+    transform: translateX(-50%) rotateY(180deg);
+}
+
+.card.flipped .card-element.air {
+    right: unset;
+    left: 5px;
+    transform: translateY(-50%) rotateY(180deg);
+}
+
+.card.flipped .card-element.earth {
+    left: unset;
+    right: 5px;
+    transform: translateY(-50%) rotateY(180deg);
+}
+
+/* Add scoreboard styles */
+.scoreboard {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.8);
+    color: white;
+    padding: 10px 15px;
+    border-radius: 8px;
+    margin-bottom: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.score-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 5px 15px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.score-player.current-turn {
+    background: rgba(255, 255, 255, 0.2);
+    transform: scale(1.05);
+}
+
+.score-player .name {
+    font-weight: bold;
+    font-size: 1.1rem;
+    margin-bottom: 5px;
+}
+
+.score-player .cards-count {
+    font-size: 1.5rem;
+    font-weight: bold;
+}
+
+.score-player.player1-score .cards-count {
+    color: #4caf50;
+}
+
+.score-player.player2-score .cards-count {
+    color: #f44336;
+}
+
+.score-divider {
+    font-size: 1.8rem;
+    margin: 0 10px;
+    font-weight: bold;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+/* Winner announcement styles */
+.winner-announcement {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 9999;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.winner-content {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    max-width: 80%;
+}
+
+.winner-content h2 {
+    color: var(--primary-color);
+    font-size: 2rem;
+    margin-bottom: 20px;
+}
+
+.winner-content p {
+    font-size: 1.2rem;
+    margin-bottom: 25px;
+}
+
+.winner-content .btn {
+    margin-top: 10px;
+}
+
+/* Improved mobile styles */
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: repeat(3, 1fr);
+        grid-template-rows: repeat(3, 1fr);
+        gap: 8px;
+        margin: 0 auto;
+        width: 100%;
+        max-width: 350px;
+    }
+    
+    .card {
+        width: 100%;
+        height: 100%;
+        min-height: 100px;
+    }
+    
+    .card-element {
+        width: 28px;
+        height: 28px;
+        font-size: 1rem;
+    }
+    
+    .card-header {
+        font-size: 0.9rem;
+        padding: 5px;
+    }
+    
+    .card-faction {
+        font-size: 0.8rem;
+    }
+    
+    .card-footer {
+        font-size: 0.7rem;
+        padding: 3px;
+    }
+    
+    .scoreboard {
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+    
+    .score-player .name {
+        font-size: 0.9rem;
+    }
+    
+    .score-player .cards-count {
+        font-size: 1.2rem;
+    }
+}
+
+/* Fix for cards to ensure content is visible */
+.card-content {
+    position: relative;
+    z-index: 1;
+    padding: 8px;
+    height: calc(100% - 16px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* Make sure the flipped card shows correctly */
+.card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card.flipped .card-content,
+.card.flipped .card-header,
+.card.flipped .card-footer {
+    transform: rotate(180deg);
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+}
+
+/* Card Rotations and Transitions */
+.card {
+    transition: transform 0.3s ease;
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+}
+
+/* Opponent Card Styles */
+.card[data-owner]:not([data-owner=currentPlayerName]) {
+    transform-style: preserve-3d;
+}
+
+/* Ensure text remains readable when card is rotated */
+.card[style*="rotate(180deg)"] .card-header,
+.card[style*="rotate(180deg)"] .card-content,
+.card[style*="rotate(180deg)"] .card-footer {
+    transform: rotate(180deg);
+}
+
+/* Adjust element positions for opponent's cards */
+.card[style*="rotate(180deg)"] .card-element.fire {
+    top: unset;
+    bottom: 5px;
+}
+
+.card[style*="rotate(180deg)"] .card-element.water {
+    bottom: unset;
+    top: 5px;
+}
+
+.card[style*="rotate(180deg)"] .card-element.air {
+    right: unset;
+    left: 5px;
+}
+
+.card[style*="rotate(180deg)"] .card-element.earth {
+    left: unset;
+    right: 5px;
+}
+
+/* Ensure hand cards are always readable */
+.hand .card {
+    transform-origin: center center;
+}
+
+/* Smooth transitions for card movements */
+.cell .card {
+    transition: transform 0.3s ease, top 0.3s ease, left 0.3s ease;
+}
+
+/* Ensure card content remains readable during animations */
+.card-content {
+    transform-style: preserve-3d;
+    backface-visibility: visible;
+}
+
+/* Adjust animations for opponent cards */
+@keyframes placeCard {
+    0% {
+        transform: translateY(-20px) scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+.card.placed[style*="rotate(180deg)"] {
+    animation: placeCardFlipped 0.5s ease-out;
+}
+
+@keyframes placeCardFlipped {
+    0% {
+        transform: translateY(20px) scale(1.1) rotate(180deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) scale(1) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+/* Game Board Layout */
+#game-board {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    transition: transform 0.3s ease;
+}
+
+#game-board.flipped {
+    transform: rotate(180deg);
+}
+
+/* Grid Layout */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    grid-template-rows: repeat(3, 1fr);
+    gap: 10px;
+    width: 100%;
+    height: 100%;
+    transition: transform 0.3s ease;
+}
+
+/* Player Areas */
+.player-area {
+    display: grid;
+    grid-template-columns: 150px 1fr 150px;
+    gap: 1rem;
+    padding: 1rem;
+    background: var(--purple-light);
+    border-radius: 12px;
+    min-height: calc(var(--card-height) + 2rem);
+}
+
+/* When board is flipped, rotate cards and text back to readable orientation */
+#game-board.flipped .card {
+    transform: rotate(180deg);
+}
+
+/* Keep opponent cards rotated correctly in flipped view */
+#game-board.flipped .card[data-owner]:not([data-owner=currentPlayerName]) {
+    transform: rotate(0deg);
+}
+
+/* Keep text readable in flipped view */
+#game-board.flipped .card-header,
+#game-board.flipped .card-content,
+#game-board.flipped .card-footer,
+#game-board.flipped .turn-status,
+#game-board.flipped .scoreboard {
+    transform: rotate(180deg);
+}
+
+/* Ensure hand cards are always readable */
+.hand .card {
+    transform-origin: center center;
+}
+
+/* Keep hand cards readable in flipped view */
+#game-board.flipped .hand .card {
+    transform: rotate(180deg);
+}
+
+/* Scoreboard in flipped view */
+#game-board.flipped .scoreboard {
+    transform: rotate(180deg);
+}
+
+/* Animation for card placement */
+@keyframes placeCard {
+    0% {
+        transform: translateY(-20px) scale(1.1);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+@keyframes placeCardFlipped {
+    0% {
+        transform: translateY(20px) scale(1.1) rotate(180deg);
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(0) scale(1) rotate(180deg);
+        opacity: 1;
+    }
+}
+
+/* Ensure controls stay readable */
+#game-controls {
+    transform-origin: center center;
+}
+
+#game-board.flipped #game-controls {
+    transform: rotate(180deg);
+}
+
+/* Keep effect slots and discard piles readable */
+#game-board.flipped .effect-slot,
+#game-board.flipped .discard-pile {
+    transform: rotate(180deg);
+}
+
+/* Ensure card elements are positioned correctly in flipped view */
+#game-board.flipped .card-element {
+    transform: rotate(180deg);
+}
+
+/* Maintain hover effects in flipped view */
+#game-board.flipped .cell:hover {
+    transform: translateY(2px);
+}
+
+/* Maintain card selection effects in flipped view */
+#game-board.flipped .card.selected {
+    transform: rotate(180deg) translateY(10px);
+}
+
+/* Animation adjustments for flipped view */
+#game-board.flipped .card.placed {
+    animation: placeCardFlipped 0.5s ease-out;
+}
+
+/* Card ownership styles */
+.card {
+    border-width: 2px;
+    border-style: solid;
+    border-color: var(--primary-color);
+    background: white;
+}
+
+/* Player's cards */
+.card.owner-self {
+    border-color: var(--success-color);
+    background: linear-gradient(135deg, #f6f7f8 0%, #e0e4e8 100%);
+}
+
+/* Opponent's cards */
+.card.owner-opponent {
+    border-color: var(--error-color);
+    background: linear-gradient(135deg, #ffebee 0%, #ffcdd2 100%);
+}
+
+/* Captured state styles - just change the opacity */
+.card.captured {
+    opacity: 0.7;
+    border-color: var(--warning-color);
+}
+
+/* Online Players Counter */
+.online-counter {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+    box-shadow: var(--box-shadow);
+}
+
+.online-counter .count {
+    font-size: 1.2rem;
+    font-weight: bold;
+}
+
+.online-counter .dot {
+    width: 8px;
+    height: 8px;
+    background-color: var(--success-color);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+}
+
+/* Live Matches Section */
+.live-matches {
+    background: white;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--box-shadow);
+}
+
+.live-matches h3 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.live-matches h3::before {
+    content: '🔴';
+    font-size: 0.8em;
+}
+
+.match-card {
+    background: var(--purple-light);
+    border-radius: 8px;
+    padding: 1rem;
+    margin-bottom: 0.75rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.match-card:hover {
+    background: var(--purple-hover);
+    transform: translateY(-2px);
+}
+
+.match-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.match-players {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+}
+
+.match-player {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex: 1;
+}
+
+.player-name {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.player-score {
+    font-size: 1.25rem;
+    font-weight: bold;
+}
+
+.match-vs {
+    font-weight: bold;
+    color: var(--text-secondary);
+}
+
+.match-status {
+    font-size: 0.875rem;
+    color: var(--error-color);
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.match-status::before {
+    content: '•';
+    color: var(--error-color);
+    animation: blink 1s infinite;
+}
+
+.match-time {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+@keyframes blink {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0; }
+}
+
+/* Previous Matches Styles */
+.matches-divider {
+    margin: 1.5rem 0;
+    text-align: center;
+    position: relative;
+}
+
+.matches-divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--purple-light);
+    z-index: 0;
+}
+
+.matches-divider button {
+    position: relative;
+    z-index: 1;
+    background: white;
+    padding: 0.5rem 1.5rem;
+}
+
+#previous-matches-container {
+    margin-top: 1.5rem;
+}
+
+#previous-matches-container h4 {
+    color: var (--text-secondary);
+    margin-bottom: 1rem;
+}
+
+.match-card.previous {
+    border-left: 4px solid transparent;
+}
+
+.match-card.previous.winner-left {
+    border-left-color: var(--success-color);
+}
+
+.match-card.previous.winner-right {
+    border-left-color: var(--error-color);
+}
+
+.match-card.previous.tie {
+    border-left-color: var(--warning-color);
+}
+
+.match-result {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.match-card.previous .match-header {
+    color: var(--text-secondary);
+}
+
+.match-card.previous .match-time {
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+}
+
+/* Add these styles to the bottom of your CSS file */
+
+/* Coin Notification Styles */
+.coin-notification {
+    position: fixed;
+    top: 80px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 12px 20px;
+    border-radius: 8px;
+    z-index: 1000;
+    max-width: 300px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transform: translateY(-20px);
+    opacity: 0;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    backdrop-filter: blur(4px);
+}
+
+.coin-notification.show {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.coin-notification.fade-out {
+    opacity: 0;
+    transform: translateY(-20px);
+}
+
+.coin-notification .coin-amount {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 5px;
+}
+
+.coin-notification.positive .coin-amount {
+    color: #4CAF50;
+}
+
+.coin-notification.negative .coin-amount {
+    color: #F44336;
+}
+
+.coin-notification .coin-reason {
+    font-size: 0.9rem;
+    color: #e0e0e0;
+}
+
+/* Enhance the existing coin balance display */
+.coin-balance {
+    display: inline-flex;
+    align-items: center;
+    padding: 6px 12px;
+    background: linear-gradient(135deg, #673ab7, #9c27b0);
+    color: white;
+    border-radius: 30px;
+    font-weight: bold;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    transition: all 0.3s ease;
+}
+
+.coin-balance:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+.coin-balance .coin-icon {
+    font-size: 1.2rem;
+    margin-right: 8px;
+}
+
+#coinBalance {
+    display: inline-block;
+    min-width: 40px;
+}
+
+/* Animation for when coin balance changes */
+@keyframes coinPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.1);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.coin-balance.updated {
+    animation: coinPulse 0.5s ease;
+}
+
+/* Bet modal enhancements */
+#betModal .modal-content {
+    background: linear-gradient(to bottom, #f9f9f9, #eaeaea);
+    border-radius: 12px;
+}
+
+#betAmount {
+    width: 100%;
+    padding: 12px;
+    font-size: 1.2rem;
+    border: 2px solid #673ab7;
+    border-radius: 6px;
+    text-align: center;
+    background: #fff;
+    color: #333;
+    transition: all 0.3s;
+}
+
+#betAmount:focus {
+    border-color: #9c27b0;
+    box-shadow: 0 0 0 2px rgba(156, 39, 176, 0.2);
+    outline: none;
+}
+
+.bet-input {
+    margin: 20px 0;
+}
+
+.bet-input label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #444;
+}
+
+/* Add these styles at the end of your CSS file */
+
+/* Quests Panel Styles */
+.quests-panel {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-top: 1.5rem;
+    transition: all 0.3s ease;
+}
+
+.quests-panel:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}
+
+.panel-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.25rem;
+}
+
+.panel-header h3 {
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.refresh-quests {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--purple-light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.refresh-quests:hover {
+    background: var(--purple-hover);
+    transform: rotate(180deg);
+}
+
+.refresh-icon {
+    font-size: 1.2rem;
+}
+
+.quests-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.quest-item {
+    background: var(--purple-light);
+    border-radius: 8px;
+    padding: 1rem;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.quest-item:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow);
+}
+
+.quest-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+}
+
+.quest-title {
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.quest-reward {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: var(--primary-color);
+    font-weight: 700;
+}
+
+.quest-description {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    margin-bottom: 0.75rem;
+}
+
+.quest-progress {
+    height: 8px;
+    width: 100%;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 4px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.progress-bar {
+    height: 100%;
+    background: linear-gradient(90deg, var(--primary-color), var(--accent-color));
+    border-radius: 4px;
+    transition: width 0.5s ease;
+}
+
+.quest-progress-text {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    display: flex;
+    justify-content: space-between;
+}
+
+.quest-actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+}
+
+.quest-complete {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(54, 179, 126, 0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.quest-item.completed .quest-complete {
+    opacity: 1;
+}
+
+.quest-item.completed {
+    border: 2px solid var(--success-color);
+}
+
+.quest-item.completed .progress-bar {
+    background: var(--success-color);
+}
+
+.complete-badge {
+    background: var(--success-color);
+    color: white;
+    border-radius: 20px;
+    padding: 0.25rem 1rem;
+    font-weight: 600;
+    box-shadow: 0 4px 12px rgba(54, 179, 126, 0.3);
+}
+
+.quest-completion {
+    text-align: center;
+}
+
+.quest-completion-header {
+    margin-bottom: 1.5rem;
+}
+
+.quest-completion-header h3 {
+    font-size: 1.8rem;
+    color: var(--primary-color);
+    margin-bottom: 1rem;
+}
+
+.coin-reward {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: #FFD700;
+    text-shadow: 0 2px 5px rgba(0,0,0,0.2);
+    animation: rewardPulse 2s infinite;
+}
+
+@keyframes rewardPulse {
+    0% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1);
+    }
+}
+
+.reward-amount {
+    margin-left: 0.5rem;
+}
+
+.quest-completion-details {
+    margin-bottom: 1.5rem;
+}
+
+.quest-completion-details p {
+    font-size: 1.2rem;
+    color: var(--text-secondary);
+}
+
+/* Adjust the sidebar to accommodate the new section */
+@media (max-width: 768px) {
+    .quests-panel {
+        margin-top: 1rem;
+        padding: 1rem;
+    }
+    
+    .quest-item {
+        padding: 0.75rem;
+    }
+}
+
+/* Add these styles for the greeting section */
+.greeting-container {
+    background: linear-gradient(135deg, var(--primary-color), var(--accent-color));
+    color: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    max-width: 1280px;
+    margin: 2rem auto;
+    overflow: hidden;
+    position: relative;
+}
+
+.greeting-container::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='100' height='100' viewBox='0 0 100 100'%3E%3Cpath fill='%23ffffff' fill-opacity='0.05' d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z'%3E%3C/path%3E%3C/svg%3E");
+}
+
+.greeting-content {
+    position: relative;
+    z-index: 1;
+}
+
+.greeting-content h1 {
+    font-size: 2.2rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+    animation: fadeInUp 0.8s ease-out;
+}
+
+.quote-container {
+    background: rgba(255, 255, 255, 0.95);
+    backdrop-filter: blur(5px);
+    border-radius: 10px;
+    padding: 1.2rem;
+    margin-top: 1rem;
+    border-left: 4px solid var(--primary-color);
+    animation: fadeInUp 1s ease-out 0.2s;
+    animation-fill-mode: both;
+    max-width: 800px;
+    box-shadow: var(--box-shadow);
+}
+
+#randomQuote {
+    font-size: 1.1rem;
+    font-style: italic;
+    margin-bottom: 0.5rem;
+    line-height: 1.6;
+    color: var(--text-primary);
+}
+
+.quote-author {
+    text-align: right;
+    font-weight: 600;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-top: 0.5rem;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Media queries for greeting section */
+@media (max-width: 768px) {
+    .greeting-container {
+        padding: 1.5rem;
+        margin: 1rem;
+    }
+    
+    .greeting-content h1 {
+        font-size: 1.8rem;
+    }
+    
+    #randomQuote {
+        font-size: 1rem;
+    }
+}
+
+/* Rotating animation for the refresh button */
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    }
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.refresh-quests.rotating .refresh-icon {
+    animation: rotate 1s linear infinite;
+}
+
+/* Add these styles at the end of your CSS file */
+
+/* Animated Background */
+.animated-background {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    overflow: hidden;
+    background: linear-gradient(125deg, #2c3e50, #4a69bd, #6c5ce7, #4a69bd, #2c3e50);
+    background-size: 400% 400%;
+    animation: gradientShift 15s ease infinite;
+}
+
+.particles-container {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.particle {
+    position: absolute;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    box-shadow: 0 0 10px 2px rgba(255, 255, 255, 0.1);
+    animation: float 15s infinite;
+}
+
+/* Create 20 different particles with different sizes, positions, and animations */
+@keyframes gradientShift {
+    0% { background-position: 0% 50%; }
+    50% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
+}
+
+@keyframes float {
+    0% {
+        transform: translateY(0) translateX(0) rotate(0deg);
+        opacity: 0;
+    }
+    10% {
+        opacity: 1;
+    }
+    90% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(-100vh) translateX(100px) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* Enhance existing greeting container to work with the animated background */
+.greeting-container {
+    position: relative;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    padding: 2rem;
+    margin-bottom: 2rem;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.greeting-container:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: translateY(-5px);
+    box-shadow: 0 6px 40px rgba(0, 0, 0, 0.15);
+}
+
+/* Modify lobby container to have glass effect */
+.lobby-container {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    border-radius: 16px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+}
+
+/* Mode cards with glass effect */
+.mode-card {
+    background: rgba(255, 255, 255, 0.3);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.mode-card:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+}
+
+/* Sidebar panels with glass effect */
+.stats-panel, .quests-panel {
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+
+.stats-panel:hover, .quests-panel:hover {
+    background: rgba(255, 255, 255, 0.6);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
+}

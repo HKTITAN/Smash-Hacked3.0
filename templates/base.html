@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% if current_user.is_authenticated %}
+    <meta name="username" content="{{ current_user.username }}">
+    {% endif %}
+    <title>{% block title %}Smash&Clash{% endblock %}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <nav class="main-nav">
+        <div class="nav-content">
+            <a href="{{ url_for('index') }}" class="logo">Smash&Clash</a>
+            <div class="nav-links">
+                {% if current_user.is_authenticated %}
+                    <div class="coin-display">
+                        <span class="coin-icon">🪙</span>
+                        <span class="coin-value">{{ current_user.smash_coins }}</span>
+                    </div>
+                    <a href="{{ url_for('lobby') }}" class="nav-link">Lobby</a>
+                    <a href="{{ url_for('profile') }}" class="nav-link">Profile</a>
+                    <a href="{{ url_for('logout') }}" class="nav-link">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="nav-link">Login</a>
+                    <a href="{{ url_for('register') }}" class="nav-link">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }}">{{ message }}</div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        
+        {% block content %}{% endblock %}
+    </main>
+
+    {% block scripts %}
+        <script src="{{ url_for('static', filename='js/common.js') }}"></script>
+    {% endblock %}
+</body>
+</html>

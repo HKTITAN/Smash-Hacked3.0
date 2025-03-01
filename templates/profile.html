@@ -1,0 +1,752 @@
+{% extends "base.html" %}
+
+{% block title %}Profile - Smash&Clash{% endblock %}
+
+{% block content %}
+<div class="profile-container">
+    <div class="profile-header">
+        <h2>{{ current_user.username }}'s Profile</h2>
+        <div class="profile-rating">Rating: {{ current_user.rating }}</div>
+    </div>
+
+    <div class="profile-stats">
+        <div class="stat-card">
+            <div class="stat-label">Games Played</div>
+            <div class="stat-value">{{ current_user.games_played }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Games Won</div>
+            <div class="stat-value">{{ current_user.games_won }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-label">Win Rate</div>
+            <div class="stat-value">
+                {{ "%.1f"|format(win_rate) }}%
+            </div>
+        </div>
+    </div>
+
+    <div class="profile-content">
+        <div class="profile-main">
+            <div class="account-settings">
+                <h3>Account Settings</h3>
+                <div class="settings-forms">
+                    <form class="settings-form" action="{{ url_for('update_profile') }}" method="POST">
+                        <h4>Update Profile</h4>
+                        <div class="form-group">
+                            <label for="username">New Username</label>
+                            <input type="text" id="username" name="username" value="{{ current_user.username }}" class="form-control">
+                        </div>
+                        <div class="form-group">
+                            <label for="email">New Email</label>
+                            <input type="email" id="email" name="email" value="{{ current_user.email }}" class="form-control">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Update Profile</button>
+                    </form>
+
+                    <form class="settings-form" action="{{ url_for('change_password') }}" method="POST">
+                        <h4>Change Password</h4>
+                        <div class="form-group">
+                            <label for="current_password">Current Password</label>
+                            <input type="password" id="current_password" name="current_password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="new_password">New Password</label>
+                            <input type="password" id="new_password" name="new_password" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm_password">Confirm New Password</label>
+                            <input type="password" id="confirm_password" name="confirm_password" class="form-control" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Change Password</button>
+                    </form>
+                </div>
+            </div>
+
+            <div class="match-history-section">
+                <h3>Recent Matches</h3>
+                {% if matches %}
+                    <div class="matches-list">
+                        {% for match in matches %}
+                            <div class="match-card {% if match.winner_id == current_user.id %}winner{% elif match.winner_id %}loser{% else %}ongoing{% endif %}">
+                                <div class="match-info">
+                                    <div class="match-players">
+                                        {% if match.player1_id == current_user.id %}
+                                            <span class="player-name">You</span> vs 
+                                            <span class="player-name">{{ match.player2.username }}</span>
+                                        {% else %}
+                                            <span class="player-name">{{ match.player1.username }}</span> vs 
+                                            <span class="player-name">You</span>
+                                        {% endif %}
+                                    </div>
+                                    <div class="match-result">
+                                        {% if match.winner_id == current_user.id %}
+                                            <span class="result-win">Victory</span>
+                                        {% elif match.winner_id %}
+                                            <span class="result-loss">Defeat</span>
+                                        {% elif match.game_state and match.game_state.final_scores %}
+                                            {% if match.game_state.final_scores.player1.name == current_user.username %}
+                                                {% if match.game_state.final_scores.player1.cards > match.game_state.final_scores.player2.cards %}
+                                                    <span class="result-win">Victory</span>
+                                                {% elif match.game_state.final_scores.player1.cards < match.game_state.final_scores.player2.cards %}
+                                                    <span class="result-loss">Defeat</span>
+                                                {% else %}
+                                                    <span class="result-tie">Tie</span>
+                                                {% endif %}
+                                            {% else %}
+                                                {% if match.game_state.final_scores.player2.cards > match.game_state.final_scores.player1.cards %}
+                                                    <span class="result-win">Victory</span>
+                                                {% elif match.game_state.final_scores.player2.cards < match.game_state.final_scores.player1.cards %}
+                                                    <span class="result-loss">Defeat</span>
+                                                {% else %}
+                                                    <span class="result-tie">Tie</span>
+                                                {% endif %}
+                                            {% endif %}
+                                        {% else %}
+                                            <span class="result-ongoing">Ongoing</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                                <div class="match-date">
+                                    {{ match.started_at.strftime('%Y-%m-%d %H:%M') }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="no-matches">
+                        <p>No matches played yet.</p>
+                        <a href="{{ url_for('lobby') }}" class="btn btn-primary">Find a Match</a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="chat-sidebar">
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>Messages</h3>
+                    <div class="chat-actions">
+                        <button id="minimizeChatBtn" class="btn btn-icon">_</button>
+                    </div>
+                </div>
+                <div class="chat-content">
+                    <div class="chat-contacts">
+                        <div class="search-box">
+                            <input type="text" id="contactSearch" placeholder="Search contacts...">
+                        </div>
+                        <div class="contacts-list" id="contactsList">
+                            <!-- Contacts will be populated here -->
+                        </div>
+                    </div>
+                    <div class="chat-messages" id="chatMessages">
+                        <div class="no-chat-selected">
+                            <p>Select a contact to start chatting</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input-area" style="display: none;">
+                    <input type="text" id="messageInput" placeholder="Type a message...">
+                    <button id="sendMessageBtn" class="btn btn-primary">Send</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Chat Templates -->
+<template id="contact-template">
+    <div class="contact-item">
+        <div class="contact-avatar"></div>
+        <div class="contact-info">
+            <div class="contact-name"></div>
+            <div class="contact-status"></div>
+        </div>
+        <div class="unread-badge" style="display: none;">0</div>
+    </div>
+</template>
+
+<template id="message-template">
+    <div class="message">
+        <div class="message-content"></div>
+        <div class="message-time"></div>
+    </div>
+</template>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+.profile-container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.profile-header {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.profile-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.75rem;
+}
+
+.profile-rating {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--primary-color);
+    padding: 0.5rem 1rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+}
+
+.profile-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.stat-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+}
+
+.stat-label {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.stat-value {
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    font-weight: 700;
+}
+
+.account-settings {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 2rem;
+}
+
+.account-settings h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-primary);
+}
+
+.settings-forms {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 2rem;
+}
+
+.settings-form {
+    background: var(--purple-light);
+    padding: 1.5rem;
+    border-radius: 8px;
+}
+
+.settings-form h4 {
+    margin: 0 0 1rem 0;
+    color: var(--text-primary);
+}
+
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 0.5rem;
+    color: var(--text-secondary);
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--border-color);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.match-history-section {
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+}
+
+.match-history-section h3 {
+    margin: 0 0 1.5rem 0;
+    color: var(--text-primary);
+}
+
+.matches-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.match-card {
+    background: var(--purple-light);
+    padding: 1rem;
+    border-radius: 8px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.match-card:hover {
+    transform: translateY(-2px);
+}
+
+.match-card.winner {
+    border-left: 4px solid var(--success-color);
+}
+
+.match-card.loser {
+    border-left: 4px solid var(--error-color);
+}
+
+.match-card.ongoing {
+    border-left: 4px solid var(--warning-color);
+}
+
+.match-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.match-players {
+    font-weight: 500;
+}
+
+.match-result {
+    font-size: 0.875rem;
+}
+
+.result-win {
+    color: var(--success-color);
+}
+
+.result-loss {
+    color: var(--error-color);
+}
+
+.result-tie {
+    color: var(--warning-color);
+}
+
+.result-ongoing {
+    color: var(--warning-color);
+}
+
+.match-date {
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.no-matches {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-secondary);
+}
+
+.no-matches p {
+    margin-bottom: 1rem;
+}
+
+.profile-content {
+    display: grid;
+    grid-template-columns: 1fr 300px;
+    gap: 2rem;
+}
+
+.profile-main {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.chat-sidebar {
+    position: sticky;
+    top: 2rem;
+    height: calc(100vh - 4rem);
+}
+
+.chat-container {
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.chat-header {
+    padding: 1rem;
+    border-bottom: 1px solid var(--purple-light);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.chat-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.chat-content {
+    display: flex;
+    height: 100%;
+    overflow: hidden;
+}
+
+.chat-contacts {
+    width: 100%;
+    border-right: 1px solid var(--purple-light);
+    display: flex;
+    flex-direction: column;
+}
+
+.search-box {
+    padding: 1rem;
+    border-bottom: 1px solid var(--purple-light);
+}
+
+.search-box input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+.contacts-list {
+    flex: 1;
+    overflow-y: auto;
+    padding: 0.5rem;
+}
+
+.contact-item {
+    display: flex;
+    align-items: center;
+    padding: 0.75rem;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+    margin-bottom: 0.5rem;
+}
+
+.contact-item:hover {
+    background: var(--purple-light);
+}
+
+.contact-item.active {
+    background: var(--purple-hover);
+}
+
+.contact-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    margin-right: 0.75rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-weight: bold;
+}
+
+.contact-info {
+    flex: 1;
+}
+
+.contact-name {
+    font-weight: 500;
+    color: var(--text-primary);
+}
+
+.contact-status {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.unread-badge {
+    background: var(--error-color);
+    color: white;
+    border-radius: 12px;
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+    font-weight: bold;
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 1rem;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.no-chat-selected {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--text-secondary);
+    font-size: 0.875rem;
+}
+
+.message {
+    max-width: 80%;
+    padding: 0.75rem;
+    border-radius: 8px;
+    margin-bottom: 0.5rem;
+}
+
+.message.sent {
+    align-self: flex-end;
+    background: var(--primary-color);
+    color: white;
+}
+
+.message.received {
+    align-self: flex-start;
+    background: var(--purple-light);
+}
+
+.message-time {
+    font-size: 0.75rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+.chat-input-area {
+    padding: 1rem;
+    border-top: 1px solid var(--purple-light);
+    display: flex;
+    gap: 0.5rem;
+}
+
+.chat-input-area input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+    font-size: 0.875rem;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .profile-content {
+        grid-template-columns: 1fr;
+    }
+
+    .chat-sidebar {
+        position: fixed;
+        bottom: 0;
+        right: 0;
+        width: 300px;
+        height: 400px;
+        z-index: 100;
+    }
+
+    .chat-container {
+        border-radius: 12px 12px 0 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .chat-sidebar {
+        width: 100%;
+        height: 50vh;
+    }
+}
+</style>
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const socket = io();
+    let currentChat = null;
+    let contacts = new Map();
+    let unreadMessages = new Map();
+
+    // Initialize UI elements
+    const contactsList = document.getElementById('contactsList');
+    const chatMessages = document.getElementById('chatMessages');
+    const messageInput = document.getElementById('messageInput');
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+    const chatInputArea = document.querySelector('.chat-input-area');
+    const contactSearch = document.getElementById('contactSearch');
+    const minimizeChatBtn = document.getElementById('minimizeChatBtn');
+
+    // Load contacts
+    fetch('/api/friends')
+        .then(response => response.json())
+        .then(data => {
+            data.friends.forEach(friend => {
+                contacts.set(friend.username, friend);
+                addContactToList(friend);
+            });
+        });
+
+    // Contact search
+    contactSearch.addEventListener('input', (e) => {
+        const query = e.target.value.toLowerCase();
+        document.querySelectorAll('.contact-item').forEach(item => {
+            const name = item.querySelector('.contact-name').textContent.toLowerCase();
+            item.style.display = name.includes(query) ? 'flex' : 'none';
+        });
+    });
+
+    // Send message
+    sendMessageBtn.addEventListener('click', () => sendMessage());
+    messageInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') sendMessage();
+    });
+
+    // Minimize chat
+    minimizeChatBtn.addEventListener('click', () => {
+        const chatContainer = document.querySelector('.chat-container');
+        chatContainer.classList.toggle('minimized');
+        minimizeChatBtn.textContent = chatContainer.classList.contains('minimized') ? '+' : '_';
+    });
+
+    function addContactToList(friend) {
+        const template = document.getElementById('contact-template');
+        const contactItem = template.content.cloneNode(true).querySelector('.contact-item');
+        
+        const avatar = contactItem.querySelector('.contact-avatar');
+        avatar.textContent = friend.username[0].toUpperCase();
+        
+        const name = contactItem.querySelector('.contact-name');
+        name.textContent = friend.username;
+        
+        const status = contactItem.querySelector('.contact-status');
+        status.textContent = friend.status;
+        
+        contactItem.addEventListener('click', () => openChat(friend.username));
+        
+        contactsList.appendChild(contactItem);
+    }
+
+    function openChat(username) {
+        currentChat = username;
+        document.querySelectorAll('.contact-item').forEach(item => {
+            item.classList.remove('active');
+            if (item.querySelector('.contact-name').textContent === username) {
+                item.classList.add('active');
+                item.querySelector('.unread-badge').style.display = 'none';
+            }
+        });
+
+        chatMessages.innerHTML = '';
+        chatInputArea.style.display = 'flex';
+        
+        // Load chat history
+        fetch(`/api/chat/${username}`)
+            .then(response => response.json())
+            .then(data => {
+                data.messages.forEach(msg => addMessage(msg));
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+    }
+
+    function sendMessage() {
+        if (!currentChat) return;
+        
+        const message = messageInput.value.trim();
+        if (!message) return;
+        
+        socket.emit('private_message', {
+            to: currentChat,
+            message: message
+        });
+        
+        addMessage({
+            from: 'You',
+            message: message,
+            timestamp: new Date().toISOString()
+        });
+        
+        messageInput.value = '';
+        chatMessages.scrollTop = chatMessages.scrollHeight;
+    }
+
+    function addMessage(msg) {
+        const template = document.getElementById('message-template');
+        const messageEl = template.content.cloneNode(true).querySelector('.message');
+        
+        messageEl.classList.add(msg.from === 'You' ? 'sent' : 'received');
+        
+        const content = messageEl.querySelector('.message-content');
+        content.textContent = msg.message;
+        
+        const time = messageEl.querySelector('.message-time');
+        time.textContent = new Date(msg.timestamp).toLocaleTimeString();
+        
+        chatMessages.appendChild(messageEl);
+    }
+
+    // Socket events
+    socket.on('private_message', (data) => {
+        if (currentChat === data.from) {
+            addMessage({
+                from: data.from,
+                message: data.message,
+                timestamp: data.timestamp
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        } else {
+            // Update unread count
+            const unreadCount = (unreadMessages.get(data.from) || 0) + 1;
+            unreadMessages.set(data.from, unreadCount);
+            
+            // Update badge
+            document.querySelectorAll('.contact-item').forEach(item => {
+                if (item.querySelector('.contact-name').textContent === data.from) {
+                    const badge = item.querySelector('.unread-badge');
+                    badge.textContent = unreadCount;
+                    badge.style.display = 'block';
+                }
+            });
+        }
+    });
+
+    socket.on('friend_status_change', (data) => {
+        document.querySelectorAll('.contact-item').forEach(item => {
+            if (item.querySelector('.contact-name').textContent === data.username) {
+                item.querySelector('.contact-status').textContent = data.status;
+            }
+        });
+    });
+});
+</script>
+{% endblock %}

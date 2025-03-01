@@ -1,0 +1,229 @@
+{% extends "base.html" %}
+
+{% block title %}Game - Smash&Clash{% endblock %}
+
+{% block content %}
+<div id="game-container" data-match-id="{{ match_id }}">
+    <div id="header">
+        <div id="game-status">
+            <div class="player">
+                <span class="name">{{ current_user.username }}</span>
+                <span class="deck-count"></span>
+            </div>
+            <div id="turn-indicator"></div>
+            <div class="player">
+                <span class="name opponent-name"></span>
+                <span class="deck-count"></span>
+            </div>
+        </div>
+        <div class="game-header">
+            <div class="player-info">
+                <div class="player-name">{{ current_user.username }}</div>
+                <div class="coin-balance">
+                    <span class="coin-icon">🪙</span>
+                    <span id="coinBalance">Loading...</span>
+                </div>
+            </div>
+            <div class="betting-section" id="bettingSection">
+                <button class="btn btn-primary" id="placeBetBtn">Place Bet</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="game-board">
+        <!-- Player 2's area (opponent) -->
+        <div id="player2-area" class="player-area">
+            <div class="effect-slot"></div>
+            <div id="player2-hand" class="hand"></div>
+            <div class="discard-pile"></div>
+        </div>
+
+        <!-- Game Grid -->
+        <div id="arena">
+            <div class="grid"></div>
+        </div>
+
+        <!-- Player 1's area (current player) -->
+        <div id="player1-area" class="player-area">
+            <div class="effect-slot"></div>
+            <div id="player1-hand" class="hand"></div>
+            <div class="discard-pile"></div>
+        </div>
+    </div>
+
+    <div id="game-controls">
+        <button id="end-turn-btn" class="btn btn-primary">End Turn</button>
+        <button id="surrender-btn" class="btn btn-danger">Surrender</button>
+    </div>
+</div>
+
+<!-- Hidden element to store current user's username -->
+<div id="current-user" data-username="{{ current_user.username }}" style="display: none;"></div>
+
+<!-- Add betting modal -->
+<div id="betModal" class="modal">
+    <div class="modal-content">
+        <h3>Place Your Bet</h3>
+        <p>Current Balance: <span id="modalCoinBalance">0</span> 🪙</p>
+        <div class="bet-input">
+            <label for="betAmount">Bet Amount:</label>
+            <input type="number" id="betAmount" min="1" max="100" value="10">
+        </div>
+        <div class="bet-info">
+            <p>• Betting is only allowed before half of the board is filled</p>
+            <p>• 30% of the losing bet goes to the system</p>
+            <p>• Winner takes the remaining 70%</p>
+        </div>
+        <div class="modal-actions">
+            <button class="btn btn-primary" id="confirmBetBtn">Confirm Bet</button>
+            <button class="btn btn-secondary" id="cancelBetBtn">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<!-- Add this to your existing styles -->
+<style>
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem;
+    background: white;
+    border-radius: 12px;
+    box-shadow: var(--box-shadow);
+    margin-bottom: 1rem;
+}
+
+.player-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.coin-balance {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background: var(--purple-light);
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    font-weight: bold;
+}
+
+.coin-icon {
+    font-size: 1.2rem;
+}
+
+.betting-section {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+}
+
+.bet-input {
+    margin: 1.5rem 0;
+}
+
+.bet-input label {
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.bet-input input {
+    width: 100%;
+    padding: 0.5rem;
+    border: 1px solid var(--purple-light);
+    border-radius: 4px;
+    font-size: 1rem;
+}
+
+.bet-info {
+    margin: 1.5rem 0;
+    padding: 1rem;
+    background: var(--purple-light);
+    border-radius: 8px;
+    font-size: 0.875rem;
+}
+
+.bet-info p {
+    margin: 0.5rem 0;
+    color: var(--text-secondary);
+}
+
+.modal-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    margin-top: 1.5rem;
+}
+</style>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.js"></script>
+<script src="{{ url_for('static', filename='js/game.js') }}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const socket = io();
+    const coinBalance = document.getElementById('coinBalance');
+    const modalCoinBalance = document.getElementById('modalCoinBalance');
+    const betModal = document.getElementById('betModal');
+    const placeBetBtn = document.getElementById('placeBetBtn');
+    const confirmBetBtn = document.getElementById('confirmBetBtn');
+    const cancelBetBtn = document.getElementById('cancelBetBtn');
+    const betAmount = document.getElementById('betAmount');
+    const bettingSection = document.getElementById('bettingSection');
+    const matchId = document.querySelector('[data-match-id]').dataset.matchId;
+
+    // Load initial coin balance
+    updateCoinBalance();
+
+    // Betting modal controls
+    placeBetBtn.addEventListener('click', () => {
+        updateCoinBalance();
+        betModal.classList.add('active');
+    });
+
+    cancelBetBtn.addEventListener('click', () => {
+        betModal.classList.remove('active');
+    });
+
+    confirmBetBtn.addEventListener('click', () => {
+        const amount = parseInt(betAmount.value);
+        if (isNaN(amount) || amount <= 0) {
+            showAlert('Please enter a valid bet amount', 'error');
+            return;
+        }
+
+        socket.emit('place_bet', {
+            match_id: matchId,
+            amount: amount
+        });
+
+        betModal.classList.remove('active');
+    });
+
+    // Socket events
+    socket.on('bet_error', (data) => {
+        showAlert(data.message, 'error');
+    });
+
+    socket.on('bet_placed', (data) => {
+        showAlert(`${data.by} placed a bet of ${data.amount} SmashCoins!`, 'info');
+        updateCoinBalance();
+        bettingSection.innerHTML = `<div class="active-bet">Bet: ${data.amount} 🪙</div>`;
+    });
+
+    function updateCoinBalance() {
+        fetch('/api/coins')
+            .then(response => response.json())
+            .then(data => {
+                coinBalance.textContent = data.coins;
+                modalCoinBalance.textContent = data.coins;
+                betAmount.max = data.coins;
+            });
+    }
+});
+</script>
+{% endblock %}
